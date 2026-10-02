@@ -1,0 +1,48 @@
+// Week 1: entity and relationship modelling.
+
+entity Product {
+	name String required maxlength(100)
+	price BigDecimal required min(0)
+	stockQuantity Integer required min(0)
+}
+
+entity Customer {
+	firstName String required maxlength(50)
+	lastName String required maxlength(50)
+	email String required unique
+}
+
+enum OrderStatus {
+	PENDING,
+	SHIPPED,
+	DELIVERED,
+	CANCELLED
+}
+
+entity Order {
+	orderDate Instant required
+	status OrderStatus required
+}
+
+entity Category {
+    name String required unique maxlength(50)
+}
+
+entity OrderItem {
+    quantity Integer required min(1)
+    totalPrice BigDecimal required min(0)
+}
+
+relationship OneToMany {
+	Customer{orders} to Order{customer(email) required},
+	Order{orderitem} to OrderItem{order required}
+}
+
+relationship ManyToOne {
+	OrderItem{product(name)} to Product{orderitem} 
+// OrderItem有一个叫product的属性，它关联Product；选择Product时显示它的name。
+}
+
+relationship ManyToMany {
+	Product{category(name)} to Category{product}
+}
